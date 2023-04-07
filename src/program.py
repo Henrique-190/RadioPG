@@ -8,4 +8,17 @@ class Program:
         self.end = end
         self.img = img
         self.details = details
+
+    def __init__(self):
+        self.title = None
+        self.link = None
+        self.start = None
+        self.end = None
+        self.img = None
+        self.details = ""
+        self.days = None
+
+    def isComplete(self):
+        return self.title and self.link and self.start and self.end and self.img
+
         

@@ -47,8 +47,8 @@ def megahits():
         programacao.append(diario(soup.find_all('li', class_='pg-gr-li1')))
         i += 1
 
-    radio = radio.Radio('Mega Hits', 'https://megahits.sapo.pt/img/logo.png', site, programacao)
-    return radio
+    radio_ = radio.Radio('Mega Hits', 'https://megahits.sapo.pt/img/logo.png', site, programacao)
+    return radio_
     
 
 print(megahits())
