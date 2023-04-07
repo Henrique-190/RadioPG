@@ -5,14 +5,15 @@ import requests
 import re
 
 site = 'https://rfm.sapo.pt/'
-i = 0
+
+dias = ["SEG","TER","QUA","QUI","SEX","SAB","DOM"]
 
 def fds(tabela: list):
     # find a div in tabela with class = "row topSpace"
     dia = []
     mudouDia = 0
     programacao = []
-    programa = program.Program()
+    programa = program.Program(None,None,None,None,None,"","")
     
     for row in tabela.find_all('div', class_='row topSpace'):
         a = row.find('li', class_="pTxtRed").find('a')
@@ -21,7 +22,7 @@ def fds(tabela: list):
         prox = row.find('span')
         if a:
             programa.link = site + a['href']
-            programa.title = a.text
+            programa.title = a.text.strip()
         if img:
             programa.img = []
             for i in img:
@@ -31,11 +32,11 @@ def fds(tabela: list):
             for elem in info:
                 elem = elem.text.split('-')
                 if len(elem) == 2:
-                    programa.start = datetime.strptime(elem[0][:2], '%H').time()
+                    programa.start = datetime.strptime(elem[0][:2], '%H').time().strftime('%H:%M')
                     if elem[1][1:3] == '24':
-                        programa.end = datetime.strptime('00', '%H').time()
+                        programa.end = datetime.strptime('00', '%H').time().strftime('%H:%M')
                     else:
-                        programa.end = datetime.strptime(elem[1][1:3], '%H').time()
+                        programa.end = datetime.strptime(elem[1][1:3], '%H').time().strftime('%H:%M')
 
         if prox:
             mudouDia = 1
@@ -44,11 +45,11 @@ def fds(tabela: list):
 
         if programa.isComplete():
             if mudouDia == 1:
-                programa.details += "DOM"
+                programa.day = "DOM"
             else: 
-                programa.details += "SAB"
+                programa.day = "SAB"
             dia.append(programa)
-            programa = program.Program()
+            programa = program.Program(None,None,None,None,None,"","")
 
     programacao += dia
     return programacao
@@ -82,16 +83,15 @@ def semana(tabela: list):
     # find a div in tabela with class = "row topSpace"
     dia = []
     mudouDia = 0
-    programa = program.Program()
+    programa = program.Program(None,None,None,None,None,"","")
     
     for row in tabela.find_all('div', class_='row topSpace'):
         a = row.find('li', class_="pTxtRed").find('a')
         img = row.find_all('img')
         info = row.find_all("li", class_="pTxtLightGrey")
-        prox = row.find('span')
         if a:
             programa.link = site + a['href']
-            programa.title = a.text
+            programa.title = a.text.strip()
 
         if img:
             programa.img = []
@@ -104,45 +104,48 @@ def semana(tabela: list):
                 res, tipo = trataINFO(elem)
                 
                 if tipo == 1:
-                    programa.start = datetime.strptime(res[0][1], '%H:%M').time()
+                    programa.start = datetime.strptime(res[0][1], '%H:%M').time().strftime('%H:%M')
                     if res[0][2] == '24:00':
-                        programa.end = datetime.strptime('00:00', '%H:%M').time()
+                        programa.end = datetime.strptime('00:00', '%H:%M').time().strftime('%H:%M')
                     else:
-                        programa.end = datetime.strptime(res[0][2], '%H:%M').time()
+                        programa.end = datetime.strptime(res[0][2], '%H:%M').time().strftime('%H:%M')
 
-                    programa.details += res[0][0] + " | " + " ".join(res[1])
+                    programa.day += res[0][0]
+                    programa.details += " ".join(res[1])
                 elif tipo == 2:
                     if programa.start == None:
-                        programa.start = datetime.strptime(res[0][1], '%H:%M').time()
+                        programa.start = datetime.strptime(res[0][1], '%H:%M').time().strftime('%H:%M')
                         if res[0][2] == '24:00':
-                            programa.end = datetime.strptime('00:00', '%H:%M').time()
+                            programa.end = datetime.strptime('00:00', '%H:%M').time().strftime('%H:%M')
                         else:
-                            programa.end = datetime.strptime(res[0][2], '%H:%M').time()
+                            programa.end = datetime.strptime(res[0][2], '%H:%M').time().strftime('%H:%M')
 
-                        programa.details += res[0][0]
+                        programa.day += res[0][0]
                     else:
-                        programa.details += " | " + " ".join(res[0])
+                        programa.day += res[0][0]
+                        programa.details += " ".join(res[0])
 
                 elif tipo == 3:
-                    programa.start = datetime.strptime(res[0][0], '%H:%M').time()
+                    programa.start = datetime.strptime(res[0][0], '%H:%M').time().strftime('%H:%M')
                     if res[0][1] == '24:00':
-                        programa.end = datetime.strptime('00:00', '%H:%M').time()
+                        programa.end = datetime.strptime('00:00', '%H:%M').time().strftime('%H:%M')
                     else:
-                        programa.end = datetime.strptime(res[0][1], '%H:%M').time() 
+                        programa.end = datetime.strptime(res[0][1], '%H:%M').time().strftime('%H:%M')
+                    
+                    programa.day += res[0]
+                
                 else:
-                    programa.details += res[0]                    
+                    programa.day += res[0]                
 
         if programa.isComplete():
             dia.append(programa)
-            programa = program.Program()
+            programa = program.Program(None,None,None,None,None,"","")
     
     return dia
 
 
 def rfm():
     url = site + 'programas'
-    #dia = '0'
-    #data = {'dia': dia, 'randval': 0.1234}
     programacao = []
 
     response = requests.get(url)
@@ -155,7 +158,6 @@ def rfm():
 
     radio_ = radio.Radio('RFM', 'https://images.rfm.sapo.pt/logo_rfm_r6285e5bd.png', site, programacao)
     return radio_
-    
-rfm()
+
 
 
