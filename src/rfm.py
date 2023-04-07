@@ -120,9 +120,8 @@ def semana(tabela: list):
                         else:
                             programa.end = datetime.strptime(res[0][2], '%H:%M').time().strftime('%H:%M')
 
-                        programa.day += res[0][0]
+                        programa.day = res[0][0]
                     else:
-                        programa.day += res[0][0]
                         programa.details += " ".join(res[0])
 
                 elif tipo == 3:
