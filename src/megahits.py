@@ -17,6 +17,7 @@ translate = {
 site = 'https://megahits.sapo.pt/'
 i = 0
 def diario(tabela: list):
+    global i
     programas = []
     for row in tabela:
         titulo = row.find('a')['title']
@@ -32,7 +33,7 @@ def diario(tabela: list):
         detalhes = row.find('td', class_='pg-gr-li-tx2').text 
         imagem = row.find('a').find('img', class_='img-fluid')['src']
         
-        programa = program.Program(titulo, link, inicial, final, imagem,days, detalhes)
+        programa = program.Program(titulo, link, inicial, final, imagem,[days], detalhes)
         programas.append(programa)
     return programas
 
@@ -64,7 +65,3 @@ def megahits():
     radio_ = radio.Radio('Mega Hits', 'https://images.megahits.sapo.pt/mega7141b648_app_square.png', site, programacao)
 
     return radio_
-    
-megahits()
-
-

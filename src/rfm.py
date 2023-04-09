@@ -43,11 +43,11 @@ def fds(tabela: list):
             programacao += dia
             dia = []
 
-        if programa.isComplete():
+        if programa.isComplete(day=True):
             if mudouDia == 1:
-                programa.day = "DOM"
+                programa.day = ["DOM"]
             else: 
-                programa.day = "SAB"
+                programa.day = ["SAB"]
             dia.append(programa)
             programa = program.Program(None,None,None,None,None,"","")
 
@@ -82,7 +82,6 @@ def trataINFO(info):
 def semana(tabela: list):
     # find a div in tabela with class = "row topSpace"
     dia = []
-    mudouDia = 0
     programa = program.Program(None,None,None,None,None,"","")
     
     for row in tabela.find_all('div', class_='row topSpace'):
@@ -120,7 +119,7 @@ def semana(tabela: list):
                         else:
                             programa.end = datetime.strptime(res[0][2], '%H:%M').time().strftime('%H:%M')
 
-                        programa.day = res[0][0]
+                        programa.day += res[0][0]
                     else:
                         programa.details += " ".join(res[0])
 
@@ -134,7 +133,7 @@ def semana(tabela: list):
                     programa.day += res[0]
                 
                 else:
-                    programa.day += res[0]                
+                    programa.day += res[0]          
 
         if programa.isComplete():
             dia.append(programa)
@@ -156,7 +155,6 @@ def rfm():
     programacao += fds(soup.find("div",{"id":"weekend"}))
 
     radio_ = radio.Radio('RFM', 'https://images.rfm.sapo.pt/logo_rfm_r6285e5bd.png', site, programacao)
+
     return radio_
-
-
 
