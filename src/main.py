@@ -21,13 +21,9 @@ user_agent_list = [
 ]
 
 
-
-# img_to_bytes and img_to_html inspired from https://pmbaumgartner.github.io/streamlitopedia/sizing-and-images.html
-
-
 def centeredImage(img,nome):
     st.markdown("<figure>", unsafe_allow_html=True)
-    st.markdown("<img src='{}' style='display: block;margin-left: auto;margin-right: auto; height: 150px'>".format(img), unsafe_allow_html=True)
+    st.markdown("<img src='{}' style='display: block;margin-left: auto;margin-right: auto; width: 300px'>".format(img), unsafe_allow_html=True)
     st.markdown("<figcaption style='text-align: center;'>{}</figcaption>".format(nome), unsafe_allow_html=True)
     st.markdown("</figure>", unsafe_allow_html=True)
 
@@ -110,7 +106,7 @@ st.set_page_config(
 bd = database.BD()
 
 # carregar BD
-if bd.checkUpdate() or True:
+if bd.checkUpdate():
     with st.spinner('A carregar...'):
         # MEGA HITS
         radio = megahits.megahits({"user-agent": random.choice(user_agent_list)})
