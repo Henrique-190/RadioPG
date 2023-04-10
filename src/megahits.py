@@ -17,7 +17,6 @@ translate = {
 site = 'https://megahits.sapo.pt/'
 i = 0
 def diario(tabela: list):
-    global i
     programas = []
     for row in tabela:
         titulo = row.find('a')['title']
@@ -38,20 +37,18 @@ def diario(tabela: list):
     return programas
 
 
-def megahits():
+def megahits(headers):
     url = site + 'ajax/programacao/getgrelha.aspx'
     dia = '0'
     data = {'dia': dia, 'randval': 0.1234}
     programacao = []
 
     global i
-    i = 0
+    response = requests.post(url, data=data)
+    soup = BeautifulSoup(response.text,"html.parser")
+
     while i < 5:
-        dia = str(i)
-        data['dia'] = dia
-        response = requests.post(url, data=data)
-        soup = BeautifulSoup(response.text,"html.parser")
-        programacao += diario(soup.find_all('li', class_='pg-gr-li1'))
+        programacao += (diario(soup.find_all('li', class_='pg-gr-li1')))
         i += 1
 
     while i < 7:
@@ -59,9 +56,11 @@ def megahits():
         data['dia'] = dia
         response = requests.post(url, data=data)
         soup = BeautifulSoup(response.text,"html.parser")
-        programacao += diario(soup.find_all('li', class_='pg-gr-li1'))
+        programacao += (diario(soup.find_all('li', class_='pg-gr-li1')))
         i += 1
 
     radio_ = radio.Radio('Mega Hits', 'https://images.megahits.sapo.pt/mega7141b648_app_square.png', site, programacao)
-
+    i = 0
     return radio_
+
+megahits({})

@@ -142,11 +142,11 @@ def semana(tabela: list):
     return dia
 
 
-def rfm():
+def rfm(headers):
     url = site + 'programas'
     programacao = []
 
-    response = requests.get(url)
+    response = requests.get(url, headers=headers)
     soup = BeautifulSoup(response.text,"lxml")
     global i
     i = 0

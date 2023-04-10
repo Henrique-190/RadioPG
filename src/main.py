@@ -3,12 +3,24 @@
 import requests
 import megahits
 import rfm
+import observador
 from bs4 import BeautifulSoup
 import streamlit as st
 from PIL import Image
 import urllib.request
 import database
 from datetime import time
+import random
+
+user_agent_list = [
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15',
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0',
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:77.0) Gecko/20100101 Firefox/77.0',
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
+]
+
+
 
 # img_to_bytes and img_to_html inspired from https://pmbaumgartner.github.io/streamlitopedia/sizing-and-images.html
 
@@ -98,14 +110,18 @@ st.set_page_config(
 bd = database.BD()
 
 # carregar BD
-if bd.checkUpdate():
+if bd.checkUpdate() or True:
     with st.spinner('A carregar...'):
         # MEGA HITS
-        radio = megahits.megahits()
+        radio = megahits.megahits({"user-agent": random.choice(user_agent_list)})
         bd.insert_radio(radio.name, radio.img, radio.link, radio.scheduleToJson())
 
         # RFM
-        radio = rfm.rfm()
+        radio = rfm.rfm({"user-agent": random.choice(user_agent_list)})
+        bd.insert_radio(radio.name, radio.img, radio.link, radio.scheduleToJson())
+
+        # OBSERVADOR
+        radio = observador.observador({"user-agent": random.choice(user_agent_list)})
         bd.insert_radio(radio.name, radio.img, radio.link, radio.scheduleToJson())
 
 filtro = st.selectbox(
@@ -117,7 +133,7 @@ radio = None
 if filtro == "Por rádio":
     opcao = st.selectbox(
     'Qual rádio?',
-    ("",'RFM', 'Mega Hits'))
+    ("",'RFM', 'Mega Hits', 'Observador'))
 
     if opcao == "RFM":
         radio = bd.getEntry("RFM")
@@ -127,6 +143,9 @@ if filtro == "Por rádio":
         radio = bd.getEntry("Mega Hits")
         show_page(radio)
     
+    elif opcao == "Observador":
+        radio = bd.getEntry("Observador")
+        show_page(radio)
 
 elif filtro == "Por dia":
     dia = st.selectbox(

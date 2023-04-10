@@ -4,7 +4,7 @@ class Radio:
         self.name = name
         self.img = img
         self.link = link
-        self.schedule = schedule #List (days) of List of Program objects
+        self.schedule = schedule # Sorted List of Program objects
 
     def scheduleToJson(self):
         res = []
