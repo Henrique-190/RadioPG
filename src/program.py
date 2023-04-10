@@ -15,6 +15,7 @@ class Program:
         lst = ""
         
         dia_lst = self.day.split(" ")
+        dia_lst = list(dia_lst)
         if len(dia_lst) == 1:
             self.day = dia_lst[0]
         else:

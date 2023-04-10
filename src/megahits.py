@@ -62,5 +62,3 @@ def megahits(headers):
     radio_ = radio.Radio('Mega Hits', 'https://images.megahits.sapo.pt/mega7141b648_app_square.png', site, programacao)
     i = 0
     return radio_
-
-megahits({})

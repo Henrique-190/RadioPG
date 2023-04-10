@@ -1,9 +1,6 @@
 # Request a cada rádio e buscar a programação (por enquanto) e o que está a dar
 # Imprimir a programação e o que está a dar
 import requests
-import megahits
-import rfm
-import observador
 from bs4 import BeautifulSoup
 import streamlit as st
 from PIL import Image
@@ -11,6 +8,12 @@ import urllib.request
 import database
 from datetime import time
 import random
+
+# MODULOS DE RÁDIOS
+import megahits
+import rfm
+import observador
+import comercial
 
 user_agent_list = [
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15',
@@ -22,10 +25,11 @@ user_agent_list = [
 
 
 def centeredImage(img,nome):
-    st.markdown("<figure>", unsafe_allow_html=True)
-    st.markdown("<img src='{}' style='display: block;margin-left: auto;margin-right: auto; width: 300px'>".format(img), unsafe_allow_html=True)
-    st.markdown("<figcaption style='text-align: center;'>{}</figcaption>".format(nome), unsafe_allow_html=True)
-    st.markdown("</figure>", unsafe_allow_html=True)
+    st.markdown(f"""<div style='height: 250px; display: flex; align-items: center;'>
+                        <figure>
+                            <img src='{img}' style='display: block;margin: auto; width: 60%'>
+                        </figure>
+                    </div>""", unsafe_allow_html=True)
 
 def show_page(radio):
     "A opção escolhida foi: ["+ radio.name +"](" + radio.link +")"
@@ -51,11 +55,11 @@ def show_page(radio):
                 for img in program.img:
                     with colms[idx]:
                         idx += 1
-                        st.image(img)
+                        st.image(img,width=200)
             else:
                 with colms[idx]:
                     idx += 1
-                    st.image(program.img)
+                    st.image(program.img, width=200)
 
 def show_day(radios,programas):
     if len(radios) == 0:
@@ -89,11 +93,11 @@ def show_day(radios,programas):
                             for img in programa["img"]:
                                 with colms[idx]:
                                     idx += 1
-                                    st.image(img)
+                                    st.image(img, width=200)
                         else:
                             with colms[idx]:
                                 idx += 1
-                                st.image(programa["img"])
+                                st.image(programa["img"], width=200)
 
 st.set_page_config(
     page_title="Guia de Rádios",
@@ -120,6 +124,11 @@ if bd.checkUpdate():
         radio = observador.observador({"user-agent": random.choice(user_agent_list)})
         bd.insert_radio(radio.name, radio.img, radio.link, radio.scheduleToJson())
 
+        # COMERCIAL
+        radio = comercial.comercial({"user-agent": random.choice(user_agent_list)})
+        bd.insert_radio(radio.name, radio.img, radio.link, radio.scheduleToJson())
+
+
 filtro = st.selectbox(
     'Como pretende filtrar a programação?',
     ("",'Por dia', 'Por rádio'))
@@ -129,7 +138,7 @@ radio = None
 if filtro == "Por rádio":
     opcao = st.selectbox(
     'Qual rádio?',
-    ("",'RFM', 'Mega Hits', 'Observador'))
+    ("",'RFM', 'Mega Hits', 'Observador','Rádio Comercial'))
 
     if opcao == "RFM":
         radio = bd.getEntry("RFM")
@@ -141,6 +150,10 @@ if filtro == "Por rádio":
     
     elif opcao == "Observador":
         radio = bd.getEntry("Observador")
+        show_page(radio)
+
+    elif opcao == "Rádio Comercial":
+        radio = bd.getEntry("Rádio Comercial")
         show_page(radio)
 
 elif filtro == "Por dia":
