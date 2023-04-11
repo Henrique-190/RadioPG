@@ -69,5 +69,3 @@ def observador(headers):
     programacao += list(uteis(soup.find('div', id='sunday-schedule')).values())
 
     return radio.Radio('Observador', 'https://upload.wikimedia.org/wikipedia/commons/9/97/Logo_observador_pequeno.png', link, programacao)
-
-observador({"user-agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36'})

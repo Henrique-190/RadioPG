@@ -1,6 +1,8 @@
 # Request a cada rádio e buscar a programação (por enquanto) e o que está a dar
 # Imprimir a programação e o que está a dar
 import requests
+import cidadefm
+import renascenca
 from bs4 import BeautifulSoup
 import streamlit as st
 from PIL import Image
@@ -110,7 +112,7 @@ st.set_page_config(
 bd = database.BD()
 
 # carregar BD
-if bd.checkUpdate():
+if bd.checkUpdate() and True:
     with st.spinner('A carregar...'):
         # MEGA HITS
         radio = megahits.megahits({"user-agent": random.choice(user_agent_list)})
@@ -129,6 +131,14 @@ if bd.checkUpdate():
         bd.insert_radio(radio.name, radio.img, radio.link, radio.scheduleToJson())
 
 
+        # CIDADE FM
+        radio = cidadefm.cidade({"user-agent": random.choice(user_agent_list)})
+        bd.insert_radio(radio.name, radio.img, radio.link, radio.scheduleToJson())
+
+        # RENASCENÇA
+        radio = renascenca.renascenca({"user-agent": random.choice(user_agent_list)})
+        bd.insert_radio(radio.name, radio.img, radio.link, radio.scheduleToJson())
+
 filtro = st.selectbox(
     'Como pretende filtrar a programação?',
     ("",'Por dia', 'Por rádio'))
@@ -138,7 +148,7 @@ radio = None
 if filtro == "Por rádio":
     opcao = st.selectbox(
     'Qual rádio?',
-    ("",'RFM', 'Mega Hits', 'Observador','Rádio Comercial'))
+    ("",'RFM', 'Mega Hits', 'Observador','Rádio Comercial', 'Cidade FM', 'Renascença'))
 
     if opcao == "RFM":
         radio = bd.getEntry("RFM")
@@ -151,9 +161,17 @@ if filtro == "Por rádio":
     elif opcao == "Observador":
         radio = bd.getEntry("Observador")
         show_page(radio)
-
+    
     elif opcao == "Rádio Comercial":
         radio = bd.getEntry("Rádio Comercial")
+        show_page(radio)
+
+    elif opcao == "Cidade FM":
+        radio = bd.getEntry("Cidade FM")
+        show_page(radio)
+    
+    elif opcao == "Renascença":
+        radio = bd.getEntry("Renascença")
         show_page(radio)
 
 elif filtro == "Por dia":
