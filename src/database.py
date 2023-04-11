@@ -2,14 +2,15 @@ from pymongo import MongoClient
 from radio import Radio
 from program import Program
 import datetime
-
+import streamlit as st
 
 class BD:
-    def __init__(self, collection="radio"):
-        self.client = MongoClient()
+    def __init__(self, client, collection="radio"):
+        self.client = client
         self.db = self.client.radios
         self.collection = collection
 
+    
     def checkUpdate(self):
         # drop if day is different
         col = self.db["radio"].find_one()
