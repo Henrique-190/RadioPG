@@ -124,8 +124,8 @@ def show_day(ans):
                         with st.expander("__" + programa["title"] + "__ | " + programa["day"]
                                          + " (" + programa["start"] + " - " + programa["end"] + ")"):
                             programa["details"]
-                            if programa.link is not None and programa.link != "":
-                                "[Visite](" + programa.link + ")"
+                            if programa["link"] is not None and programa["link"] != "":
+                                "[Visite](" + programa["link"] + ")"
 
                             colms = st.columns(len(programa["img"]) + 2)
 
