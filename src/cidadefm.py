@@ -45,5 +45,3 @@ def cidade(headers):
         soup = BeautifulSoup(response.text, "lxml")
         programacao += diario(soup, dias[day])
     return radio.Radio('Cidade FM', 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Log%C3%B3tipo_Cidade_FM_2018.png/250px-Log%C3%B3tipo_Cidade_FM_2018.png', url, programacao)
-
-cidade({})
