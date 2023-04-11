@@ -32,7 +32,7 @@ def diario(tabela: list):
         detalhes = row.find('td', class_='pg-gr-li-tx2').text 
         imagem = row.find('a').find('img', class_='img-fluid')['src']
         
-        programa = program.Program(titulo, link, inicial, final, imagem,[days], detalhes)
+        programa = program.Program(titulo, link, inicial, final, [imagem],[days], detalhes)
         programas.append(programa)
     return programas
 

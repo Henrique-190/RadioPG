@@ -28,12 +28,12 @@ def diario(soup, day):
         else:
             fim = datetime.strptime(horasText[1], '%H').time().strftime('%H:%M')
         titulo = programa.find('div', class_='grelha-programa fs-4').text
-        image = programa.find('div', class_='col-12 col-sm-6 nogutter imagem-programa p-5 pt-0 pt-sm-5') #imagem
+        image = url + programa.find('div', class_='col-12 col-sm-6 nogutter imagem-programa p-5 pt-0 pt-sm-5').find('img')['src']
         detalhes = programa.find('div', class_='fs-8').text
         if programa.find('div', class_='grelha-animadores fs-5').text != "":
             detalhes += " Com: " + programa.find('div', class_='grelha-animadores fs-5').text
         
-        programacao.append(program.Program(titulo, '', inicio, fim, [], [day], detalhes))
+        programacao.append(program.Program(titulo, '', inicio, fim, [image], [day], detalhes))
     
     return programacao
 

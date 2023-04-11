@@ -43,8 +43,8 @@ def diario(soup, day):
                         link = url + "/" + p.find('a', class_='lnkBlack')['href']
                     except:
                         titulo = p.find('td', class_='extralarge').text
-            details = programas[titulo] if titulo in programas else None
-            programacao.append(program.Program(titulo, link, inicio, None, None, [day], details))
+            details = programas[titulo] if titulo in programas else ""
+            programacao.append(program.Program(titulo, link, inicio, "", [], [day], details))
 
     return programacao
 

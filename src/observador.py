@@ -47,15 +47,15 @@ def uteis(tabelas):
                             day = p.find('div',class_="day-schedule-hours-program-week-days-day").text.strip()
                             
                             if day == "SEG a QUI":
-                                programacao[titulo + inicio + str([]) + str([translate[i] for i in range(4)])] = program.Program(titulo,link,inicio,"",[], [translate[i] for i in range(4)],details)
+                                programacao[titulo + inicio + str([]) + str([translate[i] for i in range(4)])] = program.Program(titulo,link,inicio,"",[], [translate[i] for i in range(4)],details.capitalize())
                             else:
-                                programacao[titulo + inicio + str([]) + str([day[:3]])] = program.Program(titulo,link,inicio,"",[], [day[:3]],details)
+                                programacao[titulo + inicio + str([]) + str([day[:3]])] = program.Program(titulo,link,inicio,"",[], [day[:3]],details.capitalize())
                     else:
                         titulo = programa.find('a').contents[0].strip()
                         repetition = programa.find('span',class_="repetition").text.strip() if programa.find('span',class_="repetition") else ""
                         details = programa.find('span', class_='extra-info').text.strip() + " " + repetition
                         link = url + programa.find('a')['href']
-                        programacao[titulo + inicio + str([]) + str([translate[i] for i in range(5)])] = program.Program(titulo,link,inicio,"",[], [translate[i] for i in range(5)],details)
+                        programacao[titulo + inicio + str([]) + str([translate[i] for i in range(5)])] = program.Program(titulo,link,inicio,"",[], [translate[i] for i in range(5)],details.capitalize())
         
     return programacao
 
