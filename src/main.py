@@ -55,9 +55,9 @@ if "dia" not in st.session_state:
 
 
 def centeredImage(img):
-    st.markdown(f"""<div style='height: 250px; display: flex; align-items: center;justify-content: center;'>
+    st.markdown(f"""<div style='height: 250px; display: flex; align-items: center; justify-content: center'>
                         <figure>
-                            <img src='{img}' style='display: block;margin: auto; width: 60%'>
+                            <img src='{img}' style='display: block;margin: auto; width: 200px '>
                         </figure>
                     </div>""", unsafe_allow_html=True)
 
