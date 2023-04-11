@@ -1,8 +1,8 @@
 import random
-from datetime import time
+from datetime import datetime, time
 
 import streamlit as st
-
+import pymongo
 import database
 from cidadefm import cidade
 from comercial import comercial
@@ -142,8 +142,14 @@ def show_day(ans):
                                     st.image(programa["img"], width=200)
                 rIndex += 1
 
+@st.cache_resource
+def init_connection():
+    return pymongo.MongoClient(**st.secrets["mongo"])
+    
+client = init_connection()
+bd = database.BD(client)
 
-bd = database.BD()
+
 
 # carregar BD
 if bd.checkUpdate():

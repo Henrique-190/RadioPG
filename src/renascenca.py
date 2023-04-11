@@ -72,8 +72,5 @@ def renascenca(headers):
 
     for dia in dias:
         programacao += diario(soup, dias[dia])
-    return radio.Radio('Rádio Renascença', 'https://rrsite-images.azureedge.net/img/Renascenca-85-anos_logo.svg',
+    return radio.Radio('Rádio Renascença', 'https://play-lh.googleusercontent.com/iCc40z5xTZaSlAsCUvpdtYIxGB3BYKtTRXw-nAaxBWsbQeDQludhRCwmaYcfLRJIaA',
                        'https://rr.sapo.pt', programacao)
-
-
-renascenca({})
