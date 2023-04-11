@@ -1,20 +1,24 @@
-from bs4 import BeautifulSoup
-from datetime import datetime
-import radio, program
-import requests
 import re
+from datetime import datetime
+
+import requests
+from bs4 import BeautifulSoup
+
+import program
+import radio
 
 site = 'https://rfm.sapo.pt/'
 
-dias = ["SEG","TER","QUA","QUI","SEX","SAB","DOM"]
+dias = ["SEG", "TER", "QUA", "QUI", "SEX", "SAB", "DOM"]
 
-def fds(tabela: list):
+
+def fds(tabela):
     # find a div in tabela with class = "row topSpace"
     dia = []
     mudouDia = 0
     programacao = []
-    programa = program.Program(None,None,None,None,None,"","")
-    
+    programa = program.Program(None, None, None, None, None, "", "")
+
     for row in tabela.find_all('div', class_='row topSpace'):
         a = row.find('li', class_="pTxtRed").find('a')
         img = row.find_all('img')
@@ -46,17 +50,17 @@ def fds(tabela: list):
         if programa.isComplete(day=True):
             if mudouDia == 1:
                 programa.day = ["DOM"]
-            else: 
+            else:
                 programa.day = ["SAB"]
             dia.append(programa)
-            programa = program.Program(None,None,None,None,None,"","")
+            programa = program.Program(None, None, None, None, None, "", "")
 
     programacao += dia
     return programacao
 
+
 def trataINFO(info):
     aux = []
-    tipo = 0
     match = re.match(r'(.*)(\d{2}:\d{2}) - (\d{2}:\d{2})', info)
     match2 = re.match(r'(\d{2}:\d{2}) - (\d{2}:\d{2})', info)
     if "|" in info:
@@ -78,12 +82,11 @@ def trataINFO(info):
     return aux, tipo
 
 
-
-def semana(tabela: list):
+def semana(tabela):
     # find a div in tabela with class = "row topSpace"
     dia = []
-    programa = program.Program(None,None,None,None,None,"","")
-    
+    programa = program.Program(None, None, None, None, None, "", "")
+
     for row in tabela.find_all('div', class_='row topSpace'):
         a = row.find('li', class_="pTxtRed").find('a')
         img = row.find_all('img')
@@ -99,9 +102,9 @@ def semana(tabela: list):
 
         if info:
             for elem in info:
-                elem=elem.text
+                elem = elem.text
                 res, tipo = trataINFO(elem)
-                
+
                 if tipo == 1:
                     programa.start = datetime.strptime(res[0][1], '%H:%M').time().strftime('%H:%M')
                     if res[0][2] == '24:00':
@@ -112,7 +115,7 @@ def semana(tabela: list):
                     programa.day += res[0][0]
                     programa.details += " ".join(res[1])
                 elif tipo == 2:
-                    if programa.start == None:
+                    if programa.start is None:
                         programa.start = datetime.strptime(res[0][1], '%H:%M').time().strftime('%H:%M')
                         if res[0][2] == '24:00':
                             programa.end = datetime.strptime('00:00', '%H:%M').time().strftime('%H:%M')
@@ -129,32 +132,30 @@ def semana(tabela: list):
                         programa.end = datetime.strptime('00:00', '%H:%M').time().strftime('%H:%M')
                     else:
                         programa.end = datetime.strptime(res[0][1], '%H:%M').time().strftime('%H:%M')
-                    
+
                     programa.day += res[0]
-                
+
                 else:
-                    programa.day += res[0]          
+                    programa.day += res[0]
 
         if programa.isComplete():
             dia.append(programa)
-            programa = program.Program(None,None,None,None,None,"","")
-    
+            programa = program.Program(None, None, None, None, None, "", "")
+
     return dia
 
 
 def rfm(headers):
     url = site + 'programas'
-    programacao = []
 
     response = requests.get(url, headers=headers)
-    soup = BeautifulSoup(response.text,"lxml")
+    soup = BeautifulSoup(response.text, "lxml")
     global i
     i = 0
 
-    programacao = semana(soup.find("div",{"id":"week"}))
-    programacao += fds(soup.find("div",{"id":"weekend"}))
+    programacao = semana(soup.find("div", {"id": "week"}))
+    programacao += fds(soup.find("div", {"id": "weekend"}))
 
     radio_ = radio.Radio('RFM', 'https://images.rfm.sapo.pt/logo_rfm_r6285e5bd.png', site, programacao)
 
     return radio_
-

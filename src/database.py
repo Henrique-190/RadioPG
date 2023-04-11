@@ -3,12 +3,13 @@ from radio import Radio
 from program import Program
 import datetime
 
+
 class BD:
     def __init__(self, collection="radio"):
         self.client = MongoClient()
         self.db = self.client.radios
         self.collection = collection
-        
+
     def checkUpdate(self):
         # drop if day is different
         col = self.db["radio"].find_one()
@@ -22,7 +23,7 @@ class BD:
 
         return True
 
-    def insert_radio(self,name, img, link, schedule):
+    def insert_radio(self, name, img, link, schedule):
         radio = {
             "name": name,
             "img": img,
@@ -54,21 +55,23 @@ class BD:
         if radio:
             prog_lst = []
             for item in programas:
-                prog_lst.append(Program(item["title"], item["link"], item["start"], item["end"], item["img"], item["day"], item["details"]))
+                prog_lst.append(
+                    Program(item["title"], item["link"], item["start"], item["end"], item["img"], item["day"],
+                            item["details"]))
             return Radio(radio["name"], radio["img"], radio["link"], prog_lst)
         else:
             return None
-        
+
     def getDayHour(self, day, hour):
         hour = hour + ":00"
-        #
-        programas = list(self.db["programas"].find({"day": day, "start": {"$gte": hour}}))
+        programas = sorted(list(self.db["programas"].find({"day": day, "start": {"$gte": hour}})),
+                           key=(lambda x: (x["radio"], x["start"])))
         aux = []
         for programa in programas:
             if programa["radio"] not in aux:
                 aux.append(programa["radio"])
         radios = []
         for radio in aux:
-            radios.append(self.db["radio"].find_one({"name": radio},{"_id": 0, "name": 1, "img": 1, "link": 1}))
+            radios.append(self.db["radio"].find_one({"name": radio}, {"_id": 0, "name": 1, "img": 1, "link": 1}))
 
         return radios, programas
