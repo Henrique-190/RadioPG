@@ -1,5 +1,5 @@
 import random
-from datetime import time
+from datetime import datetime, time
 
 import streamlit as st
 
