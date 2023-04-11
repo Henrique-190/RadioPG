@@ -55,7 +55,7 @@ if "dia" not in st.session_state:
 
 
 def centeredImage(img):
-    st.markdown(f"""<div style='height: 250px; display: flex; align-items: center;'>
+    st.markdown(f"""<div style='height: 250px; display: flex; align-items: center; justify-content: center'>
                         <figure>
                             <img src='{img}' style='display: block;margin: auto; width: 60%'>
                         </figure>
@@ -124,8 +124,8 @@ def show_day(ans):
                         with st.expander("__" + programa["title"] + "__ | " + programa["day"]
                                          + " (" + programa["start"] + " - " + programa["end"] + ")"):
                             programa["details"]
-                            if programa.link is not None and programa.link != "":
-                                "[Visite](" + programa.link + ")"
+                            if programa["link"] is not None and programa["link"] != "":
+                                "[Visite](" + programa["link"] + ")"
 
                             colms = st.columns(len(programa["img"]) + 2)
 
