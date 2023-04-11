@@ -112,7 +112,7 @@ st.set_page_config(
 bd = database.BD()
 
 # carregar BD
-if bd.checkUpdate() and True:
+if bd.checkUpdate():
     with st.spinner('A carregar...'):
         # MEGA HITS
         radio = megahits.megahits({"user-agent": random.choice(user_agent_list)})
