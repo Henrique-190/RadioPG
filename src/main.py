@@ -142,7 +142,7 @@ def show_day(ans):
                                     st.image(programa["img"], width=200)
                 rIndex += 1
 
-@st.cache_resource
+@st.experimental_singleton(suppress_st_warning=True)
 def init_connection():
     return pymongo.MongoClient(**st.secrets["mongo"])
     
